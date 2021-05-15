@@ -4,7 +4,9 @@ import warnings
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import LabelEncoder
 from predictor.converter import *
+
 warnings.filterwarnings('ignore')
+
 
 def preprocess_dataset(train_dataframe):
     train_dataframe['Credit_History'].fillna(0, inplace=True)
@@ -19,7 +21,8 @@ def preprocess_dataset(train_dataframe):
     categorical_columns = train_dataframe.columns[categorical_feature_mask].to_list()
     print(train_dataframe.head(10))
     label_encoder = LabelEncoder()
-    train_dataframe[categorical_columns] = train_dataframe[categorical_columns].apply(lambda col: label_encoder.fit_transform(col))
+    train_dataframe[categorical_columns] = train_dataframe[categorical_columns].apply(
+        lambda col: label_encoder.fit_transform(col))
     print(train_dataframe.head(10))
     return train_dataframe
 
@@ -32,17 +35,17 @@ def train_dataset():
 
     X_train, X_test = train_test_split(train_sub, test_size=0.3, random_state=5)
     convert_to_ffm(X_train, 'train', X_train, None,
-               X_train.filter(['Education', 'ApplicantIncome', 'Credit_History']))
+                   X_train.filter(['Education', 'ApplicantIncome', 'Credit_History']))
     convert_to_ffm(X_test, 'test', X_test, None,
-               X_test.filter(['Education', 'ApplicantIncome', 'Credit_History']))
+                   X_test.filter(['Education', 'ApplicantIncome', 'Credit_History']))
     print("completed")
 
     ffm_model = xl.create_ffm()
     ffm_model.setTrain("./generated/train_ffm.txt")
     param = {'task': 'binary',
-            'lr': 0.2,
-            'lambda': 0.002,
-            'metric': 'acc'}
+             'lr': 0.2,
+             'lambda': 0.002,
+             'metric': 'acc'}
 
     # Start to train
     # The trained model will be stored in model.out
@@ -56,6 +59,7 @@ def train_dataset():
     # Start to predict
     # The output result will be stored in output.txt
     ffm_model.predict("./generated/model.out", "./generated/output.txt")
+
 
 if __name__ == '__main__':
     train_dataset()
